@@ -3,7 +3,9 @@ from .models import Product, Category
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from . serializers import ProductSerializer
-
+from .utils import get_product
+from rest_framework.response import Response
+from rest_framework.views import APIView
 # Display all products
 def product_list(request):
     category = request.GET.get('category') # Filter by category if specified
@@ -43,3 +45,8 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+class ProductListView(APIView):
+    def get(self, request):
+        products = get_product()
+        return Response({'products': list(products.values())})
